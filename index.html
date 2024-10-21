@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Modelado de potencia</h1>
+        <form action="" method="post">
+            <div class="formulario">
+                <label for="">¿Cuántos cristales hay?</label>
+                <input type="number" name="" id="cristales" min="0" max="4" oninput="validarDigito()" required value="0">
+                <label for="">¿Cuál es la potencia de la antena?</label>
+                <input type="number" name="" id="antena" required value="0">
+                <input type="button" value="Aceptar" onclick="calcular()">
+            </div>
+        </form>
+        
+        <div class="porcentajes" id="porcentajes"><p>100%</p></div>
+        
+        <div class="grafico" id="grafico">
+            <img src="antena.png" alt="" style="width: 10%;">
+        </div>
+
+        <div class="potencias" id="potencias"><p id="original">?mw</p></div>
+
+        <script>
+            function validarDigito() {
+            var input = document.getElementById("cristales");
+                input.value = input.value.replace(/[^0-4]/g, '') // Limita a un solo dígito
+
+            if (input.value < 0) {
+                input.value = 0;
+            } else if (input.value > 4) {
+                input.value = 4;
+            }
+        }
+
+            function calcular() {
+                var grafico = document.getElementById("grafico");
+                var porcentaje = document.getElementById("porcentajes");
+                var potencias = document.getElementById("potencias");
+
+                var p = porcentaje.getElementsByClassName("p");
+
+                var c = grafico.getElementsByClassName("c")
+
+                var f = grafico.getElementsByClassName("f");
+
+                var mw = potencias.getElementsByClassName("mw");
+
+                while (c.length > 0 && p.length>0 && f.length>0 && mw.length>0) {
+                    c[0].remove();
+                    p[0].remove();
+                    f[0].remove();
+                    mw[0].remove();
+                }
+                
+                
+                
+                var potencia = parseInt(document.getElementById("antena").value);
+
+                var original = document.getElementById("original");
+
+                
+                original.innerText = potencia+"mw"
+                var cristal = parseInt(document.getElementById("cristales").value);
+                
+                
+                if (cristal == 0 || potencia == 0) {
+                alert("Por favor, complete ambos campos."); // Mostrar un mensaje de advertencia
+                return; // Salir de la función si alguno de los campos está vacío
+                }else{
+
+                
+                calcularPotencia(potencia, cristal, 1, 100);
+                }
+
+            }
+
+
+
+            function calcularPotencia(potencia, cristales, i, porcentajetotal) {
+                if (i > cristales) {
+
+                    return potencia;
+
+                } else {
+                    atenuacion = 10 * i;
+                    porcentajetotal = porcentajetotal - atenuacion;
+                    potencia = (porcentajetotal * potencia) / 100;
+                    console.log(porcentajetotal);
+
+                    
+                    var p = document.createElement("p");
+                    p.innerText = porcentajetotal+"%";
+                    p.style.color = "white";
+                    p.className ="p";
+
+                    var mw = document.createElement("p");
+                    mw.innerText = potencia+"mw";                  
+                    mw.style.color = "white";
+                    mw.className ="mw";
+                    // Establecer los atributos de la imagen
+
+                    var f = document.createElement("img");
+                    f.src = "flecha.png"; // Ruta de la imagen
+                    f.alt = "flecha";
+                    f.style.width = "5%"// Ancho de la imagen
+                    f.className = "f";
+
+
+                    var c = document.createElement("img");
+                    c.src = "cristal.png"; // Ruta de la imagen
+                    c.alt = "cristal";
+                    c.style.width = "10%"// Ancho de la imagen
+                    c.className = "c";
+
+                    // Obtener el contenedor donde se insertará la imagen
+                    var contenedor = document.getElementById("grafico");
+                    contenedor.appendChild(f);
+                    contenedor.appendChild(c);
+                    var contenedorpor = document.getElementById("porcentajes");
+                    var contenedorpotencias =  document.getElementById("potencias");
+
+                    // Añadir la nueva imagen al contenedor
+                    
+                    contenedorpor.appendChild(p);
+                    contenedorpotencias.appendChild(mw);
+                    
+                    return calcularPotencia(potencia, cristales, i + 1, porcentajetotal);
+
+                }
+
+
+
+            }
+        </script>
+    </div>
+</body>
+
+</html>
